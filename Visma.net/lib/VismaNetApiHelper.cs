@@ -25,6 +25,26 @@ namespace ONIT.VismaNetApi.Lib
 
         public const string VismaNetDateTimeFormat = "yyyy-MM-ddTHH:mm:ss.fff";
 
+        internal static async Task<Stream> CreditNotePrint(string RefNr, VismaNetAuthorization authorization)
+        {
+            if (string.IsNullOrEmpty(RefNr)) throw new ArgumentException(nameof(RefNr));
+
+            var client = GetHttpClient(authorization);
+            {
+                var printUrl =
+                    GetApiUrlForController($"{VismaNetControllers.CustomerCreditNote}/{RefNr}/print");
+                return await client.GetStream(printUrl);
+            }
+        }
+
+        public static Task<bool> DeleteCreditNote(string creditNoteNumber, VismaNetAuthorization auth)
+        {
+            var url = GetApiUrlForController(VismaNetControllers.CustomerCreditNote, $"/{creditNoteNumber}");
+            ;
+            return GetHttpClient(auth)
+                .Delete(url);
+        }
+
         public static Task<bool> DeleteInvoice(string invoiceNumber, VismaNetAuthorization auth)
         {
             var url = GetApiUrlForController(VismaNetControllers.CustomerInvoice, $"/{invoiceNumber}");
